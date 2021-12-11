@@ -1,7 +1,10 @@
 package com.application.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
@@ -16,6 +19,18 @@ public class User {
     private String email;
     private String password;
 
+    @Getter
+    @Setter
+    private Integer rating;
+
+    @Getter
+    @Setter
+    private String socialDescription;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<String, String> contacts = new HashMap<>();
+
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",
@@ -24,6 +39,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    @ManyToMany(mappedBy = "users")
+    private Set<Organization> orgs = new HashSet<>();
 
     public User() {
     }
@@ -41,6 +59,14 @@ public class User {
         this.email = email;
         this.password = password;
         this.roles = roles;
+    }
+
+    public void setContacts(String key, String value) {
+        contacts.put(key, value);
+    }
+
+    public Map<String, String> getContacts() {
+        return contacts;
     }
 
     public Long getId() {

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+
+    <title>Регистрация компании</title>
+</head>
+<body>
+<div th:insert="/navbar"></div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>Создание конкурса</h1>
+            <form th:action="@{/contests/save}" th:object="${contest}" method="post">
+
+                <p class="error-message" th:if="${#fields.hasGlobalErrors()}"
+                   th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation
+                    error</p>
+
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('contestName')}? 'has-error':''">
+                    <label for="contestName" class="control-label">Название конкурса</label>
+                    <input id="contestName" class="form-control" th:field="*{contestName}"/>
+                    <p class="error-message"
+                       th:each="error: ${#fields.errors('contestName')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('description')}? 'has-error':''">
+                    <label for="description" class="control-label">Описание и требования</label>
+                    <input id="description" class="form-control" th:field="*{description}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('description')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('category')}? 'has-error':''">
+                    <label for="category" class="control-label">Категория</label> <input
+                        id="category" class="form-control" th:field="*{category}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('category')}" th:text="${error}">Validation
+                        error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('startDate')}? 'has-error':''">
+                    <label for="startDate" class="control-label">Дата начала</label> <input
+                        id="startDate" class="form-control" th:field="*{startDate}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('startDate')}" th:text="${error}">Validation
+                        error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('deadline')}? 'has-error':''">
+                    <label for="deadline" class="control-label">Дата конца приёма решений</label> <input
+                        id="deadline" class="form-control" th:field="*{deadline}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('deadline')}" th:text="${error}">Validation
+                        error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('prize')}? 'has-error':''">
+                    <label for="prize" class="control-label">Денежный приз</label> <input
+                        id="prize" class="form-control" th:field="*{prize}"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('prize')}" th:text="${error}">Validation
+                        error</p>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Создать</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript"
+        th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript"
+        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+</body>
+</html>

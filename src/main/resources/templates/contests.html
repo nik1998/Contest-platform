@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+
+    <title>Регистрация</title>
+</head>
+<body>
+<div th:insert="/navbar"></div>
+<br>
+
+<div class="container">
+    <span><a sec:authorize="isAuthenticated()" th:href="@{/contests/create}">Создать конкурс</a></span>
+    <div class="row">
+        <div class="col-lg-10 mt-5 mb-5">
+            <table id="example" class="table table-bordered" style="width: 100%">
+                <thead>
+                <tr>
+                    <th>Название конкурса</th>
+                    <th>Категория</th>
+                    <th>Организация</th>
+                    <th>Дата начала</th>
+                    <th>Дата окончания приёма решений</th>
+                    <th>Приз</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="con : ${contestList.getContent()}">
+                    <td th:text="${con.getContestName()}"></td>
+                    <td>
+                        <ul>
+                            <li th:each="c :${con.getCategories()}">
+                                <span th:text="${c.getCategory()}"></span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td th:text="${con.organization?.name}"></td>
+                    <td th:text="${#dates.format(con.getStartDate(), 'dd.MM.yyyy')}"></td>
+                    <td th:text="${#dates.format(con.getDeadline(), 'dd.MM.yyyy')}"></td>
+                    <td th:text="${con.getPrize()} + ' рублей'"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation" class="paging">
+                <ul class="pagination" th:if="${contestList.getTotalPages() > 1}">
+                    <li class="page-item" th:classappend="${!contestList.hasPrevious()? 'disabled' : ''}">
+                        <a class="page-link" th:href="@{'/contests?page=' + ${0}}"
+                           tabindex="-1">В начало</a>
+                    </li>
+                    <th:block th:each="item : ${#numbers.sequence(0, contestList.getTotalPages()-1)}">
+                        <li class="page-item" th:classappend="${item == contestList.getNumber()? 'active' : ''}"
+                            th:if="${item >= contestList.getNumber() -3 && item <= contestList.getNumber() + 3}">
+                            <a class="page-link" th:href="@{'/contests?page=' + ${item}}"
+                               th:text="${item + 1}"></a>
+                        </li>
+                    </th:block>
+                    <li class="page-item" th:classappend="${!contestList.hasNext()? 'disabled' : ''}">
+                        <a class="page-link"
+                           th:href="@{'/contests?page=' + ${contestList.getNumber() + 1}}">Следующая</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript"
+        th:src="@{/webjars/jquery/3.2.1/jquery.min.js/}"></script>
+<script type="text/javascript"
+        th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+
+</body>
+</html>
