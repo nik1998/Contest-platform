@@ -12,7 +12,7 @@
     <title>Регистрация</title>
 </head>
 <body>
-<div th:insert="/navbar"></div>
+<div th:replace="/navbar :: navbar"></div>
 <br>
 
 <div class="container">
@@ -32,18 +32,20 @@
                 </thead>
                 <tbody>
                 <tr th:each="con : ${contestList.getContent()}">
-                    <td th:text="${con.getContestName()}"></td>
+                    <td>
+                        <a th:href="@{'/contests/contest/' + ${con.getId()}}" th:text="${con.getContestName()}">Конкурс</a>
+                    </td>
                     <td>
                         <ul>
-                            <li th:each="c :${con.getCategories()}">
-                                <span th:text="${c.getCategory()}"></span>
+                            <li th:each="c :${#strings.arraySplit(con.getCategories(), ' ')}">
+                                <p th:text="${c}"></p>
                             </li>
                         </ul>
                     </td>
                     <td th:text="${con.organization?.name}"></td>
-                    <td th:text="${#dates.format(con.getStartDate(), 'dd.MM.yyyy')}"></td>
-                    <td th:text="${#dates.format(con.getDeadline(), 'dd.MM.yyyy')}"></td>
-                    <td th:text="${con.getPrize()} + ' рублей'"></td>
+                    <td th:text="${#dates.format(con.getStartDate(), 'dd.MM.yyyy HH:mm')}"></td>
+                    <td th:text="${#dates.format(con.getDeadline(), 'dd.MM.yyyy HH:mm')}"></td>
+                    <td th:text="${con.getPrize()!=null? con.getPrize(): '0'} + ' руб.'"></td>
                 </tr>
                 </tbody>
             </table>

@@ -2,6 +2,7 @@ package com.application.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
@@ -21,7 +22,7 @@ public class User {
 
     @Getter
     @Setter
-    private Integer rating;
+    private Integer rating = 0;
 
     @Getter
     @Setter
@@ -40,8 +41,22 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Organization> orgs = new HashSet<>();
+
+    @Getter
+    @Setter
+    @ManyToOne
+    private Organization organization;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "con_users",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "con_id", referencedColumnName = "id"))
+    private Set<Contest> contests = new HashSet<>();
 
     public User() {
     }

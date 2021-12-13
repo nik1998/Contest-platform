@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrgRepository extends JpaRepository<Organization, Long> {
-    Organization findByEmail(String email);
 
     Organization findByCompanyName(String companyName);
 }

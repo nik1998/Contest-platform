@@ -32,11 +32,6 @@ public class OrgServiceImpl implements OrgService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Override
-    public Organization findByEmail(String email) {
-        return orgRepository.findByEmail(email);
-    }
-
-    @Override
     public Organization findByCompanyName(String name) {
         return orgRepository.findByCompanyName(name);
     }
@@ -54,15 +49,14 @@ public class OrgServiceImpl implements OrgService {
         user.setLastName("");
         user.setEmail(registration.getEmail());
         user.setPassword(encPassword);
-        user.setRoles(Arrays.asList(new Role("ROLE_ORG")));
-        userRepository.save(user);
+        user.setRoles(Arrays.asList(new Role("ORG_ADMIN")));
+        user = userRepository.save(user);
 
         Organization org = new Organization();
         org.setCompanyName(registration.getCompanyName());
         org.setUrl(registration.getUrl());
         org.setDescription(registration.getDescription());
-        org.setEmail(registration.getEmail());
-        org.setPassword(encPassword);
+        org.addUser(user);
         return orgRepository.save(org);
     }
 

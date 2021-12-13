@@ -1,10 +1,12 @@
 package com.application.dto;
 
+import com.application.model.Role;
 import com.application.validators.FieldMatch;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 
 @FieldMatch.List({
         @FieldMatch(first = "password", second = "confirmPassword", message = "The password fields must match"),
@@ -78,4 +80,14 @@ public class UserRegistrationDto {
         this.terms = terms;
     }
 
+    public UserRegistrationDto(String firstName, String lastName, String email, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+    public UserRegistrationDto(){
+
+    }
 }
+

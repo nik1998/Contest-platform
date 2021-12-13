@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
 <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -12,15 +12,11 @@
 <title>Войти</title>
 </head>
 <body>
-	<div th:insert="/navbar"></div>
+	<div th:replace="/navbar :: navbar"></div>
 
 	<div class="container">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
-
-				<div th:if="${param.success}">
-					<div class="alert alert-info">Успешная регистрация!</div>
-				</div>
 				<h1>Войти</h1>
 				<form th:action="@{/login}" method="post">
 					<div th:if="${param.error}">

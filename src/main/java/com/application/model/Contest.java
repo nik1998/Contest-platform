@@ -1,51 +1,31 @@
 package com.application.model;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "contest")
+@Data
 public class Contest {
-    @Getter
-    @Setter
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Getter
-    @Setter
+
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", nullable = true)
     private Organization organization;
 
-    @OneToMany(mappedBy = "contest")
-    private List<Category> categories = new ArrayList<>();
-
-    @Getter
-    @Setter
+    private String categories;
     private String description;
-
-    @Getter
-    @Setter
     private String contestName;
-
-    @Getter
-    @Setter
     private Date deadline;
-
-    @Getter
-    @Setter
     private Date startDate;
-
-    @Getter
-    @Setter
-    private Integer prize;
+    private Integer prize = 0;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -54,7 +34,11 @@ public class Contest {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "con_id", referencedColumnName = "id"))
-    private List<User> jury = new ArrayList<>();
+    private Set<User> jury = new HashSet<>();
+
+
+    @ManyToMany(mappedBy = "contests")
+    private Set<User> users=new HashSet<>();
 
     public Contest() {
 
@@ -69,19 +53,7 @@ public class Contest {
         this.organization = organization;
     }
 
-    public List<User> getJury() {
-        return jury;
-    }
-
-    public void setJury(List<User> jury) {
-        this.jury = jury;
-    }
-
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategory(List<Category> categories) {
-        this.categories = categories;
+    public void addJury(User user){
+        this.jury.add(user);
     }
 }

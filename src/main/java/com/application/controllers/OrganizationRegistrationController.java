@@ -35,12 +35,12 @@ public class OrganizationRegistrationController {
     public String registerOrganization(@ModelAttribute("org") @Valid OrganizationDto orgDto,
                                        BindingResult result) {
 
-        Organization existing = orgService.findByEmail(orgDto.getEmail());
+        /*Organization existing = orgService.findByEmail(orgDto.getEmail());
         if (existing != null) {
             result.rejectValue("email", null, "There is already an account registered with that email");
-        }
+        }*/
 
-        existing = orgService.findByCompanyName(orgDto.getCompanyName());
+        Organization existing = orgService.findByCompanyName(orgDto.getCompanyName());
         if (existing != null) {
             result.rejectValue("companyName", null, "There is already an account registered with that company name");
         }
