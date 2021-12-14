@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+
+<title>Ответы пользователей</title>
+</head>
+
+<body>
+
+<div th:replace="/navbar :: navbar"></div>
+<br>
+<div class="row">
+    <div class="col-lg-10 mt-5 mb-5">
+        <table id="example" class="table table-bordered" style="width: 100%">
+            <thead>
+            <tr>
+                <th>Пользователь</th>
+                <th>Описание ответа</th>
+                <th>Файлы</th>
+                <th>Рейтинг</th>
+                <th>Оценить</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="rep : ${reports}">
+                <td>
+                    <a th:href="@{'/user?id=' + ${rep.getSender().getId()}}" th:text="${rep.getSender().getEmail()}">Пользователь</a>
+                </td>
+                <td th:text="${rep.getText()}"></td>
+                <td>
+                    <a th:href="@{'/reports/files/?id=' + ${rep.getId()}}" href="/">Получить файлы</a>
+                </td>
+                <td th:text="${rep.getRating()}"></td>
+                <td>
+                    <a th:href="@{'/reports/vote/?id=' + ${rep.getId()}}" class="btn btn-info" href="/">Оценить</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

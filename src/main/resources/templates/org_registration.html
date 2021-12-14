@@ -24,7 +24,7 @@
             </div>
 
             <h1>Регистрация компании</h1>
-            <form th:action="@{/registration_organization}" th:object="${org}" method="post">
+            <form th:action="@{/registration_organization}" th:object="${org}" method="post" enctype="multipart/form-data">
 
                 <p class="error-message" th:if="${#fields.hasGlobalErrors()}"
                    th:each="error : ${#fields.errors('global')}" th:text="${error}">Validation
@@ -77,6 +77,14 @@
                                                 type="password" th:field="*{confirmPassword}"/>
                     <p class="error-message"
                        th:each="error : ${#fields.errors('confirmPassword')}"
+                       th:text="${error}">Validation error</p>
+                </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('picByte')}? 'has-error':''">
+                    <label for="picByte" class="control-label">Изображение</label>
+                    <input id="picByte" class="form-control" type="file" th:field="*{picByte}" accept="image/png, image/jpeg"/>
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('picByte')}"
                        th:text="${error}">Validation error</p>
                 </div>
                 <div class="form-group"

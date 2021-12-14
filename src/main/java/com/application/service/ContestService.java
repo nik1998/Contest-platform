@@ -1,9 +1,7 @@
 package com.application.service;
 
 import com.application.dto.ContestDto;
-import com.application.dto.EditUserDto;
 import com.application.model.Contest;
-import com.application.model.Organization;
 import com.application.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,4 +20,6 @@ public interface ContestService {
     Contest update(Contest contest, ContestDto contestDto);
 
     Contest register(Contest contest, User user);
+
+    Contest updateImage(Contest contest, byte[] file);
 }

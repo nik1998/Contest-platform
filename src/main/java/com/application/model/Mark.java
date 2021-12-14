@@ -35,7 +35,7 @@ public class Mark {
     @Setter
     @ManyToOne
     @JoinColumn(referencedColumnName = "id", nullable = false)
-    private Contest contest;
+    private Report report;
 
     public Mark() {
 

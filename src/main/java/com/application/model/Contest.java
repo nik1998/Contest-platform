@@ -2,9 +2,12 @@ package com.application.model;
 
 
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "contest")
@@ -26,6 +29,7 @@ public class Contest {
     private Date deadline;
     private Date startDate;
     private Integer prize = 0;
+    public Boolean popularVoting = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -36,6 +40,9 @@ public class Contest {
                     name = "con_id", referencedColumnName = "id"))
     private Set<User> jury = new HashSet<>();
 
+    @Lob
+    @Type(type = "org.hibernate.type.ImageType")
+    private byte[] picByte;
 
     @ManyToMany(mappedBy = "contests")
     private Set<User> users=new HashSet<>();

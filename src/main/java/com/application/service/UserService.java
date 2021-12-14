@@ -19,4 +19,6 @@ public interface UserService extends UserDetailsService {
     User update(EditUserDto registration);
 
     List<User> findAll();
+
+    public User updateImage(User user, byte[] file);
 }

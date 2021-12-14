@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -56,6 +57,11 @@ public class OrgServiceImpl implements OrgService {
         org.setCompanyName(registration.getCompanyName());
         org.setUrl(registration.getUrl());
         org.setDescription(registration.getDescription());
+        try {
+            org.setPicByte(registration.getPicByte().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         org.addUser(user);
         return orgRepository.save(org);
     }

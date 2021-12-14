@@ -25,8 +25,12 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex flex-column align-items-center text-center">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin"
+                            <img th:attr="src=@{${image}}" alt="Нет фото"
                                  class="rounded-circle" width="150">
+                            <form th:if="${root==2}" th:action="@{/user/picture}" method="post" enctype="multipart/form-data">
+                                <input type="file" name="imagefile" accept="image/png, image/jpeg" />
+                                <button type="submit" class="btn btn-primary">Сохранить фото</button>
+                            </form>
                             <div class="mt-3">
                                 <h4 th:text="${cur_user.getFirstName()} + ' ' + ${cur_user.getLastName()}"></h4>
                                 <button class="btn btn-primary" th:if="${root==0}">Написать</button>

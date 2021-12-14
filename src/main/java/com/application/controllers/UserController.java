@@ -1,18 +1,19 @@
 package com.application.controllers;
 
 import com.application.dto.EditUserDto;
-import com.application.dto.UserRegistrationDto;
 import com.application.exception.ForbiddenException;
 import com.application.model.User;
 import com.application.service.UserService;
+import com.application.utils.DataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class UserController {
             if (userId == user.getId() || userId == -1) {
                 model.addAttribute("root", 1);
                 model.addAttribute("cur_user", user);
+                model.addAttribute("image", DataUtils.encodeImg(user.getPicByte()));
                 return "user";
             }
         }
@@ -40,6 +42,7 @@ public class UserController {
             } else {
                 model.addAttribute("root", -1);
             }
+            model.addAttribute("image", DataUtils.encodeImg(curUser.get().getPicByte()));
             model.addAttribute("cur_user", curUser.get());
         } else {
             model.addAttribute("myerror", "User not found");
@@ -60,6 +63,7 @@ public class UserController {
             userDto.setContacts(user.getContacts());
             userDto.setContests(user.getContests());
             userDto.setRating(user.getRating());
+            model.addAttribute("image", DataUtils.encodeImg(user.getPicByte()));
             model.addAttribute("root", 2);
             return "user";
         }
@@ -72,6 +76,19 @@ public class UserController {
         User user = userService.findByEmail(principal.getName());
         model.addAttribute("root", 2);
         model.addAttribute("cur_user", user);
+        model.addAttribute("image", DataUtils.encodeImg(user.getPicByte()));
         return "user";
     }
+
+    @PostMapping("/picture")
+    public String picture(@RequestParam("imagefile") MultipartFile file, Principal principal) throws IOException {
+        /*if(file.getSize()>10000){
+            throw new ForbiddenException();
+        }*/
+        User user = userService.findByEmail(principal.getName());
+        byte[] bfile = DataUtils.compressContestPicture(file.getBytes());
+        userService.updateImage(user, bfile);
+        return "redirect:/user?success";
+    }
+
 }

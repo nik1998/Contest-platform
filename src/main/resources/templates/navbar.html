@@ -14,8 +14,19 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Выйти</a></li>
                     <li sec:authorize="hasRole('ANONYMOUS')"><a th:href="@{/login}">Войти</a></li>
+                    <li sec:authorize="isAuthenticated()">
+                        <div class="dropdown">
+                            <input type="button" class="btn" id="dropdownMenuButton"
+                                    data-toggle="dropdown" aria-expanded="false"
+                                    th:value="${#authentication.name}">
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="#" th:href="@{/user}">Профиль</a>
+                                <br>
+                                <a class="dropdown-item" href="#" th:href="@{/logout}">Выйти</a>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>

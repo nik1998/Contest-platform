@@ -1,35 +1,39 @@
 package com.application.model;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "report")
 public class Report {
 
-    @Getter
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Getter
-    @Setter
     @ManyToOne
-    @JoinColumn(referencedColumnName="id", nullable=false)
+    @JoinColumn(referencedColumnName = "id", nullable = false)
     private User sender;
 
-    @Getter
-    @Setter
     @ManyToOne
-    @JoinColumn(referencedColumnName="id", nullable=false)
+    @JoinColumn(referencedColumnName = "id", nullable = false)
     private Contest contest;
 
-    @Getter
-    @Setter
     private String text;
 
+    private String fileName;
+
+    private Integer rating = 0;
+
+    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
+    private byte[] fileReport;
+
+    public void incRating(int delta) {
+        this.rating += delta;
+    }
 }

@@ -2,11 +2,13 @@ package com.application.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
@@ -19,14 +21,7 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-
-    @Getter
-    @Setter
     private Integer rating = 0;
-
-    @Getter
-    @Setter
-    private String socialDescription;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, String> contacts = new HashMap<>();
@@ -41,14 +36,9 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-
-    @Getter
-    @Setter
     @ManyToOne
     private Organization organization;
 
-    @Getter
-    @Setter
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "con_users",
@@ -57,6 +47,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(
                     name = "con_id", referencedColumnName = "id"))
     private Set<Contest> contests = new HashSet<>();
+
+
+    @Lob
+    @Type(type = "org.hibernate.type.ImageType")
+    private byte[] picByte;
 
     public User() {
     }
@@ -76,60 +71,8 @@ public class User {
         this.roles = roles;
     }
 
-    public void setContacts(String key, String value) {
-        contacts.put(key, value);
-    }
-
-    public Map<String, String> getContacts() {
-        return contacts;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Collection<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
+    public void incRating(int delta) {
+        this.rating += delta;
     }
 
     @Override

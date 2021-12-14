@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id){
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(newUser.getEmail());
         user.setFirstName(newUser.getFirstName());
         user.setLastName(newUser.getLastName());
-        if( !newUser.getPassword().isEmpty()){
+        if (!newUser.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         }
         return userRepository.save(user);
@@ -81,5 +81,10 @@ public class UserServiceImpl implements UserService {
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
+    }
+
+    public User updateImage(User user, byte[] file) {
+        user.setPicByte(file);
+        return userRepository.save(user);
     }
 }

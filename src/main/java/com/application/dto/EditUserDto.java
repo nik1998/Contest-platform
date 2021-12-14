@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 @Data
@@ -35,6 +38,8 @@ public class EditUserDto {
     private String email;
 
     private Map<String, String> contacts = new HashMap<>();
+
+    private byte[] picByte;
 
     public EditUserDto(User user){
         this.firstName = user.getFirstName();

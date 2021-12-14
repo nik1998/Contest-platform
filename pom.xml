@@ -95,6 +95,11 @@
 			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.tinify</groupId>
+			<artifactId>tinify</artifactId>
+			<version>RELEASE</version>
+		</dependency>
 	</dependencies>
 
 	<build>

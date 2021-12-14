@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -33,7 +35,7 @@ public class OrganizationRegistrationController {
 
     @PostMapping
     public String registerOrganization(@ModelAttribute("org") @Valid OrganizationDto orgDto,
-                                       BindingResult result) {
+                                       BindingResult result, HttpServletRequest request) throws ServletException {
 
         /*Organization existing = orgService.findByEmail(orgDto.getEmail());
         if (existing != null) {
@@ -50,6 +52,7 @@ public class OrganizationRegistrationController {
         }
 
         orgService.save(orgDto);
-        return "redirect:/login?success";
+        request.login(orgDto.getEmail(), orgDto.getPassword());
+        return "redirect:/?success";
     }
 }

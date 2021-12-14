@@ -72,6 +72,14 @@
                        th:each="error : ${#fields.errors('prize')}" th:text="${error}">Validation
                         error</p>
                 </div>
+                <div class="form-group"
+                     th:classappend="${#fields.hasErrors('popularVoting')}? 'has-error':''">
+                    <label class="control-label" for="popularVoting"> Народное голосование </label>
+                    <input id="popularVoting" type="checkbox" th:field="*{popularVoting}"/>  
+                    <p class="error-message"
+                       th:each="error : ${#fields.errors('popularVoting')}" th:text="${error}">Validation
+                        error</p>
+                </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-success">Создать</button>
                 </div>

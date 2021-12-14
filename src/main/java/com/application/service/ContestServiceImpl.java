@@ -21,6 +21,7 @@ public class ContestServiceImpl implements ContestService {
         Contest contest = new Contest(contestDto.getContestName(), contestDto.getDescription(), contestDto.getStartDate(), contestDto.getDeadline(), contestDto.getPrize(), user.getOrganization());
         contest.addJury(user);
         contest.setCategories(contestDto.getCategories());
+        contest.setPopularVoting(contestDto.popularVoting);
         contest = contestRepository.save(contest);
         return contest;
     }
@@ -47,5 +48,10 @@ public class ContestServiceImpl implements ContestService {
         contest.getUsers().add(user);
         contest = contestRepository.save(contest);
         return contest;
+    }
+
+    public Contest updateImage(Contest contest, byte[] file) {
+        contest.setPicByte(file);
+        return contestRepository.save(contest);
     }
 }

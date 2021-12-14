@@ -2,7 +2,9 @@ package com.application.dto;
 
 import com.application.model.Organization;
 import com.application.model.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
@@ -33,4 +35,6 @@ public class ContestDto {
     private Organization organization;
 
     private Set<User> jury = new HashSet<>();
+
+    public Boolean popularVoting = false;
 }
