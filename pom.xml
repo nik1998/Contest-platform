@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.guides.springboot</groupId>
+	<groupId>com.application</groupId>
 	<artifactId>contest_app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>contest_app</name>
 	<description>MVP project</description>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>com.tinify</groupId>
 			<artifactId>tinify</artifactId>
-			<version>RELEASE</version>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 
