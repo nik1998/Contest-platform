@@ -16,4 +16,6 @@ public interface ReportService {
     List<Report> findReportsByContest(Contest contest);
 
     Optional<Report> findById(Long id);
+
+    Report update(ReportDto reportDto, Report report);
 }

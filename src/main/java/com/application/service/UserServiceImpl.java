@@ -3,6 +3,7 @@ package com.application.service;
 import com.application.config.UserPrincipal;
 import com.application.dto.EditUserDto;
 import com.application.dto.UserRegistrationDto;
+import com.application.model.Contest;
 import com.application.model.Role;
 import com.application.model.User;
 import com.application.repository.UserRepository;
@@ -86,5 +87,11 @@ public class UserServiceImpl implements UserService {
     public User updateImage(User user, byte[] file) {
         user.setPicByte(file);
         return userRepository.save(user);
+    }
+
+    public User follow(Contest contest, User user){
+        user.getContests().add(contest);
+        user = userRepository.save(user);
+        return user;
     }
 }

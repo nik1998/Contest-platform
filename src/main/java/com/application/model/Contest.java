@@ -5,7 +5,8 @@ import lombok.Data;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,9 +27,10 @@ public class Contest {
     private String categories;
     private String description;
     private String contestName;
-    private Date deadline;
-    private Date startDate;
-    private Integer prize = 0;
+    private LocalDateTime deadline;
+    private LocalDateTime startDate;
+    private Duration endVoteDate;
+    private String prize = "";
     public Boolean popularVoting = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -44,14 +46,11 @@ public class Contest {
     @Type(type = "org.hibernate.type.ImageType")
     private byte[] picByte;
 
-    @ManyToMany(mappedBy = "contests")
-    private Set<User> users=new HashSet<>();
-
     public Contest() {
 
     }
 
-    public Contest(String contestName, String description, Date startDate, Date deadline, Integer prize, Organization organization) {
+    public Contest(String contestName, String description, LocalDateTime startDate, LocalDateTime deadline, String prize, Organization organization) {
         this.contestName = contestName;
         this.description = description;
         this.startDate = startDate;

@@ -32,6 +32,18 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.save(r);
     }
 
+    public Report update(ReportDto reportDto, Report report){
+        report.setText(reportDto.getText());
+        report.setFileName(reportDto.getFileReport().getOriginalFilename());
+        try {
+            report.setFileReport(reportDto.getFileReport().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return reportRepository.save(report);
+    }
+
+
     public Optional<Report> findReportByContestAndSender(Contest contest, User user) {
         return reportRepository.findReportByContestAndSender(contest, user);
     }

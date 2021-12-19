@@ -9,6 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,11 +28,15 @@ public class ContestDto {
     private String categories;
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private Date startDate;
+    private LocalDateTime startDate;
     @NotNull
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private Date deadline;
-    private Integer prize;
+    private LocalDateTime deadline;
+
+    //P3DT5H40M30S
+    private Duration endVoteDate;
+
+    private String prize;
 
     private Organization organization;
 

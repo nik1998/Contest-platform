@@ -19,7 +19,5 @@ public interface ContestService {
 
     Contest update(Contest contest, ContestDto contestDto);
 
-    Contest register(Contest contest, User user);
-
     Contest updateImage(Contest contest, byte[] file);
 }

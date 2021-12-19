@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
@@ -42,7 +43,7 @@ public class ReportController {
         Optional<Contest> con = contestService.findById(conId);
         if (con.isPresent()) {
             Contest contest = con.get();
-            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().before(new Date());
+            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().isBefore(LocalDateTime.now());
             if (contest.getJury().contains(user) || humanVoting) {
                 model.addAttribute("reports", reportService.findReportsByContest(contest));
                 return "report";
@@ -63,7 +64,7 @@ public class ReportController {
             Report report = rep.get();
             User user = userService.findByEmail(principal.getName());
             Contest contest = report.getContest();
-            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().before(new Date());
+            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().isBefore(LocalDateTime.now());
             if (contest.getJury().contains(user) || humanVoting) {
                 Optional<Mark> mark = markService.findMarkByEvaluatorAndReport(user, report);
                 if (mark.isPresent()) {
@@ -87,7 +88,7 @@ public class ReportController {
             Report report = rep.get();
             User user = userService.findByEmail(principal.getName());
             Contest contest = report.getContest();
-            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().before(new Date());
+            boolean humanVoting = contest.getPopularVoting() && contest.getDeadline().isBefore(LocalDateTime.now());
             if (contest.getJury().contains(user) || humanVoting) {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + report.getFileName() + "\"")

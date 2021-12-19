@@ -2,7 +2,9 @@ package com.application.controllers;
 
 import com.application.dto.EditUserDto;
 import com.application.exception.ForbiddenException;
+import com.application.model.Contest;
 import com.application.model.User;
+import com.application.service.ContestService;
 import com.application.service.UserService;
 import com.application.utils.DataUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ContestService contestService;
 
     @GetMapping
     public String user(@RequestParam(value = "id", required = false, defaultValue = "-1") long userId,
@@ -82,13 +87,36 @@ public class UserController {
 
     @PostMapping("/picture")
     public String picture(@RequestParam("imagefile") MultipartFile file, Principal principal) throws IOException {
-        /*if(file.getSize()>10000){
+        if(file.getSize()>100000000){
             throw new ForbiddenException();
-        }*/
+        }
         User user = userService.findByEmail(principal.getName());
         byte[] bfile = DataUtils.compressContestPicture(file.getBytes());
         userService.updateImage(user, bfile);
         return "redirect:/user?success";
     }
 
+    @GetMapping("/follow")
+    public String register(@RequestParam(value = "id") long conId, Principal principal, Model model) {
+
+        User user = userService.findByEmail(principal.getName());
+        Optional<Contest> contest = contestService.findById(conId);
+        if (contest.isPresent()) {
+            if (contest.get().getJury().contains(user)) {
+                throw new ForbiddenException();
+            }
+            if (user.getContests().contains(contest.get())) {
+                throw new ForbiddenException();
+            }
+            userService.follow(contest.get(), user);
+            model.addAttribute("root", 0);
+            model.addAttribute("follow", true);
+            model.addAttribute("cur_contest", contest.get());
+            model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
+            return "contest";
+        } else {
+            model.addAttribute("myerror", "Соревнование не найдено");
+            return "index";
+        }
+    }
 }

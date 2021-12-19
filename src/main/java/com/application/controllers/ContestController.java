@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
@@ -71,14 +73,14 @@ public class ContestController {
         if (result.hasErrors()) {
             return "create_contest";
         }
-        Date now = new Date();
-        if (now.after(conDto.getDeadline())) {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(conDto.getDeadline())) {
             result.rejectValue("deadline", null, "Дата конца раньше текущей даты");
         }
-        if (now.after(conDto.getStartDate())) {
+        if (now.isAfter(conDto.getStartDate())) {
             result.rejectValue("startDate", null, "Дата конца раньше текущей даты");
         }
-        if (conDto.getDeadline().before(conDto.getStartDate())) {
+        if (conDto.getDeadline().isBefore(conDto.getStartDate())) {
             result.rejectValue("deadline", null, "Дата начала позже даты конца");
         }
         if (result.hasErrors()) {
@@ -99,7 +101,7 @@ public class ContestController {
                 } else {
                     model.addAttribute("root", 0);
                 }
-                model.addAttribute("reg", contest.get().getUsers().contains(user));
+                model.addAttribute("follow", user.getContests().contains(contest.get()));
             } else {
                 model.addAttribute("root", -1);
             }
@@ -121,9 +123,9 @@ public class ContestController {
             if (!contest.get().getJury().contains(user)) {
                 throw new ForbiddenException();
             }
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            model.addAttribute("start", df.format(contest.get().getStartDate()));
-            model.addAttribute("deadline", df.format(contest.get().getDeadline()));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            model.addAttribute("start", contest.get().getStartDate().format(formatter));
+            model.addAttribute("deadline", contest.get().getDeadline().format(formatter));
             model.addAttribute("root", 2);
             model.addAttribute("cur_contest", contest.get());
             model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
@@ -142,14 +144,14 @@ public class ContestController {
             if (!contest.get().getJury().contains(user)) {
                 throw new ForbiddenException();
             }
-            Date now = new Date();
-            if (now.after(conDto.getDeadline())) {
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isAfter(conDto.getDeadline())) {
                 result.rejectValue("deadline", null, "Дата конца раньше текущей даты");
             }
-            if (now.after(conDto.getStartDate())) {
+            if (now.isAfter(conDto.getStartDate())) {
                 result.rejectValue("startDate", null, "Дата конца раньше текущей даты");
             }
-            if (conDto.getDeadline().before(conDto.getStartDate())) {
+            if (conDto.getDeadline().isBefore(conDto.getStartDate())) {
                 result.rejectValue("deadline", null, "Дата начала позже даты конца");
             }
         } else {
@@ -160,9 +162,9 @@ public class ContestController {
             conDto.setContestName(contest.get().getContestName());
             conDto.setJury(contest.get().getJury());
             conDto.setOrganization(contest.get().getOrganization());
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-            model.addAttribute("start", df.format(contest.get().getStartDate()));
-            model.addAttribute("deadline", df.format(contest.get().getDeadline()));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            model.addAttribute("start", contest.get().getStartDate().format(formatter));
+            model.addAttribute("deadline", contest.get().getDeadline().format(formatter));
             model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
             model.addAttribute("root", 2);
             return "contest";
@@ -172,31 +174,6 @@ public class ContestController {
         model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
         model.addAttribute("root", 1);
         return "contest";
-    }
-
-
-    @GetMapping("/register")
-    public String register(@RequestParam(value = "id") long conId, Principal principal, Model model) {
-
-        User user = userService.findByEmail(principal.getName());
-        Optional<Contest> contest = contestService.findById(conId);
-        if (contest.isPresent()) {
-            if (contest.get().getJury().contains(user)) {
-                throw new ForbiddenException();
-            }
-            if (contest.get().getUsers().contains(user)) {
-                throw new ForbiddenException();
-            }
-            contestService.register(contest.get(), user);
-            model.addAttribute("root", 0);
-            model.addAttribute("reg", true);
-            model.addAttribute("cur_contest", contest.get());
-            model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
-            return "contest";
-        } else {
-            model.addAttribute("myerror", "Соревнование не найдено");
-            return "index";
-        }
     }
 
     @PostMapping("update/picture")
@@ -223,23 +200,29 @@ public class ContestController {
     public String report(@ModelAttribute("report") @Valid ReportDto repDto, Principal principal, Model model) {
 
         User user = userService.findByEmail(principal.getName());
-        Optional<Contest> contest = contestService.findById(repDto.getContestId());
-        if (contest.isPresent()) {
-            if (contest.get().getJury().contains(user)) {
+        Optional<Contest> opContest = contestService.findById(repDto.getContestId());
+        if (opContest.isPresent()) {
+            Contest contest = opContest.get();
+            if (contest.getJury().contains(user)) {
                 throw new ForbiddenException();
             }
-            if (!contest.get().getUsers().contains(user)) {
+            LocalDateTime now = LocalDateTime.now();
+            if (now.isAfter(contest.getDeadline())) {
                 throw new ForbiddenException();
             }
-            Optional<Report> report = reportService.findReportByContestAndSender(contest.get(), user);
+            if (now.isBefore(contest.getStartDate())) {
+                throw new ForbiddenException();
+            }
+            Optional<Report> report = reportService.findReportByContestAndSender(contest, user);
             if (report.isPresent()) {
-                throw new ForbiddenException();
+                reportService.update(repDto, report.get());
+            } else {
+                reportService.create(repDto, user, contest);
             }
-            reportService.create(repDto, user, contest.get());
             model.addAttribute("root", 0);
-            model.addAttribute("reg", true);
-            model.addAttribute("cur_contest", contest.get());
-            model.addAttribute("image", DataUtils.encodeImg(contest.get().getPicByte()));
+            model.addAttribute("follow", user.getContests().contains(contest));
+            model.addAttribute("cur_contest", contest);
+            model.addAttribute("image", DataUtils.encodeImg(contest.getPicByte()));
             return "contest";
         } else {
             model.addAttribute("myerror", "Соревнование не найдено");

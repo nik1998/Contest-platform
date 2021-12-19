@@ -26,6 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.anonymous().principal((Principal) () -> "anonymousUser12345").authorities("ROLE_ANONYMOUS").and().authorizeRequests()
                 .antMatchers(
                         "/registration**",
+                        "/",
                         "/js/**",
                         "/css/**",
                         "/img/**",
@@ -50,7 +51,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/javax.faces.resource/**","/style.css");
+        web.ignoring().antMatchers("/javax.faces.resource/**","/style.css","/webjars/**");
     }
 
     @Autowired

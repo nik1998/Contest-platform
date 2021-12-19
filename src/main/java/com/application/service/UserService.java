@@ -2,6 +2,7 @@ package com.application.service;
 
 import com.application.dto.EditUserDto;
 import com.application.dto.UserRegistrationDto;
+import com.application.model.Contest;
 import com.application.model.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -20,5 +21,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> findAll();
 
-    public User updateImage(User user, byte[] file);
+    User updateImage(User user, byte[] file);
+
+    User follow(Contest contest, User user);
 }
